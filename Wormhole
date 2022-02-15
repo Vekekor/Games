@@ -1,0 +1,128 @@
+
+# Very small project/game inspired by Tech with Tim from whom are the assets
+import pygame
+import os
+from random import randint
+pygame.font.init()
+WIDTH, HEIGHT = 1700, 500
+BLACK = (0,0,0)
+WIN = pygame.display.set_mode((WIDTH,HEIGHT))
+BG = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
+pygame.display.set_caption("Wormholed")
+class Ship:
+    def __init__(self,x,y,color,w,h):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.w = w
+        self.h =h
+    def draw(self,WIN):
+        pygame.draw.rect(WIN,self.color,pygame.Rect(self.x,self.y,self.w,self.h))
+
+class Portal:
+    def __init__(self,x,y,color,w,h):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.w = w
+        self.h =h
+    def draw(self,WIN):
+        pygame.draw.ellipse(WIN,self.color,pygame.Rect(self.x,self.y,self.w,self.h))
+
+class Object:
+    def __init__(self,x,y,color,w,h):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.w = w
+        self.h =h
+    def draw(self,WIN):
+        pygame.draw.rect(WIN,self.color,pygame.Rect(self.x,self.y,self.w,self.h))
+POS1, POS2 = 50,50
+
+SPCAEWIDTH, SPACEHEIGHT = 55,40
+PLAYER1_IMAGE = pygame.image.load(os.path.join("assets","pixel_ship_green_small.png"))
+PLAYER1= pygame.transform.rotate(pygame.transform.scale(PLAYER1_IMAGE,(SPCAEWIDTH,SPACEHEIGHT)),270)
+PLAYER2_IMAGE =pygame.image.load(os.path.join("assets","pixel_ship_green_small.png"))
+PLAYER2= pygame.transform.rotate(pygame.transform.scale(PLAYER2_IMAGE,(SPCAEWIDTH,SPACEHEIGHT)),270)
+def main():
+    walter = 50
+    vel = 10
+    portaali = Portal(600,90,(255,0,0),80,50)
+    portaali2 = Portal(1000, 300,(0,0,255),80,50)
+    object = Object(WIDTH-100, 0,(255,255,255), 20, 500)
+    
+    player = Ship(50,50,(0,0,0),50,50)
+    player2 = Ship(50,400,(0,0,0),50,50)
+    clock = pygame.time.Clock()
+    run = True
+    clock.tick(65)
+    rando = randint(0,500)
+    rando2 = randint(500,1000)
+    rando3 = randint(0,500)
+    rando4 = randint(0,500)
+    portaali.x = rando
+    portaali.y = rando3
+    portaali2.x = rando2
+    portaali2.y = rando4
+    def movementplayer1():
+        key = pygame.key.get_pressed()
+        if key[pygame.K_d]:
+            player.x += vel
+        if key[pygame.K_s]:
+            player.y += vel
+        if key[pygame.K_y]:
+            pygame.display.update
+        if key[pygame.K_a]:
+            player.x -= vel
+        if key[pygame.K_w]:
+            player.y -= vel
+    def movementplayer2():
+        key = pygame.key.get_pressed()
+        if key[pygame.K_RIGHT]:
+            player2.x += vel
+        if key[pygame.K_LEFT]:
+            player2.x -= vel
+        if key[pygame.K_DOWN]:
+            player2.y += vel
+        if key[pygame.K_UP]:
+            player2.y -= vel
+    def windows():
+        WIN.blit(BG,(0,0))
+        WIN.fill(BLACK)
+        player.draw(WIN)
+        player2.draw(WIN)
+        portaali2.draw(WIN)
+        portaali.draw(WIN)
+        # WIN.blit(BOOSTER,(180,180))
+        WIN.blit(PLAYER1,(player.x,player.y))
+        WIN.blit(PLAYER2,(player2.x,player2.y))
+        object.draw(WIN)
+        pygame.display.update()
+
+
+    while run:
+        movementplayer1()
+        movementplayer2()
+        windows()
+        for event in pygame.event.get():
+            if event.type ==pygame.QUIT:
+                run = False
+        if ((player.x < portaali.x and player.x + walter > portaali.x) or (player.x > portaali.x and player.x < portaali.x + walter)) and ((player.y < portaali.y and player.y + walter > portaali.y) or (player.y > portaali.y and player.y < portaali.y + walter)):
+           player.x = portaali2.x
+           player.y = portaali2.y
+        if ((player2.x < portaali.x and player2.x + walter > portaali.x) or (player2.x > portaali.x and player2.x < portaali.x + walter)) and ((player2.y < portaali.y and player2.y + walter > portaali.y) or (player2.y > portaali.y and player2.y < portaali.y + walter)):
+            player2.x = portaali2.x
+            player2.y = portaali2.y
+            
+        if player.x > WIDTH - 100:
+            print("Player 1 wins")
+            exit()
+        if player2.x > WIDTH-100:
+            print("Player 2 wins")
+            exit()
+
+    pygame.quit()
+
+
+main()
