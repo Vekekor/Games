@@ -1,2 +1,2 @@
 # Games
-Late night project
+Late night small project
